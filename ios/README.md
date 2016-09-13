@@ -1,6 +1,6 @@
 ![logo](../tokbox-logo.png)
 
-# OpenTok Screensharing with Annotations Accelerator Pack for iOS<br/>Version 1.0.0
+# OpenTok Screensharing with Annotations Accelerator Pack for iOS<br/>Version 2.0.0
 
 This document describes how to use the OpenTok Screensharing with Annotations Accelerator Pack for iOS. Through the exploration of the OpenTok Screensharing with Annotations Sample App, you will learn best practices for screensharing on an iOS mobile device.
 
@@ -76,7 +76,7 @@ The following classes, interfaces, and protocols represent the software design f
 | ------------- | ------------- |
 | `MainViewController`   | In conjunction with **Main.storyboard**, this class uses the OpenTok API to initiate the client connection to the OpenTok session, and implements the sample UI and screensharing with annotations callbacks.   |
 | `OTScreenSharer`   | This component enables the publisher to share either the entire screen or a specified portion of the screen. |
-| `OTAnnotationScrollView` | Provides the initializers and methods for the client annotating views. |
+| `OTAnnotationScrollView` | Provides the initializers and methods for the client annotating views. See the [OpenTok Annotations Accelerator Pack](https://github.com/opentok/annotation-acc-pack) for more information. |
 | `OTAnnotationToolbarView`   | A convenient annotation toolbar that is optionally available for your development. As an alternative, you can create your own toolbar using `OTAnnotationScrollView`. See the [OpenTok Annotations Accelerator Pack](https://github.com/opentok/annotation-acc-pack) for more information. |
 | `OTFullScreenAnnotationViewController`   | Combines both the scroll and annotation toolbar views. See the [OpenTok Annotations Accelerator Pack](https://github.com/opentok/annotation-acc-pack) for more information. |
 
@@ -99,28 +99,36 @@ The `OTScreenSharer` and `OTAnnotationScrollView` classes are the backbone of th
 - (void)connectWithView:(UIView *)view
                 handler:(ScreenShareBlock)handler;
 - (void)disconnect;
+- (void)updateView:(UIView *)view;
+@property (weak, nonatomic) id<ScreenShareDelegate> delegate;
+
+// SUBSCRIBER
+@property (readonly, nonatomic) UIView *subscriberView;
+@property (nonatomic, getter=isSubscribeToAudio) BOOL subscribeToAudio;
+@property (nonatomic, getter=isSubscribeToVideo) BOOL subscribeToVideo;
+
+// PUBLISHER
+@property (readonly, nonatomic) UIView *publisherView;
+@property (nonatomic, getter=isPublishAudio) BOOL publishAudio;
+@property (nonatomic, getter=isPublishVideo) BOOL publishVideo;
 ```
 
 ```objc
 @interface OTAnnotationScrollView : UIView
 
-@property (nonatomic, getter = isAnnotating) BOOL annotating;
+property (nonatomic, getter = isAnnotatable) BOOL annotatable;
 @property (nonatomic, getter = isZoomEnabled) BOOL zoomEnabled;
+@property (readonly, nonatomic) OTAnnotationView *annotationView;
 
-- (instancetype)init;
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)addContentView:(UIView *)view;  // this will enable scrolling if image is larger than actual device screen
 
-@property (readonly, nonatomic) OTAnnotationToolbarView *toolbarView;
+#pragma mark - Tool bar
+@property (nullable, readonly, nonatomic) OTAnnotationToolbarView *toolbarView;
 - (void)initializeToolbarView;
 
-#pragma mark - annotation
-- (void)startDrawing;
-@property (nonatomic) UIColor *annotationColor;
+#pragma mark - Annotation
 - (void)addTextAnnotation:(OTAnnotationTextView *)annotationTextView;
-- (UIImage *)captureScreen;
-- (void)erase;
-- (void)eraseAll;
 
 @end
 ```
@@ -129,7 +137,7 @@ The `OTScreenSharer` and `OTAnnotationScrollView` classes are the backbone of th
 
 #### Initialization methods
 
-The following `OTScreenSharer` and `OTAnnotationScrollView` methods are used to initialize the screensharing with annotations features so the client can annotate their sharing screen.
+The following `OTScreenSharer` and `OTAnnotationScrollView` methods are used to initialize the screensharing with annotations features so the publisher and subscriber can both annotate the shared screen.
 
 | Feature        | Methods  |
 | ------------- | ------------- |

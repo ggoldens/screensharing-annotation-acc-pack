@@ -1,42 +1,13 @@
 ![logo](../tokbox-logo.png)
-# OpenTok Screensharing with Annotations Accelerator Pack for JavaScript<br/>Version 1.0.0
+# OpenTok Screensharing with Annotations Sample for JavaScript<br/>Version 2.0.0
 
-This document describes how to develop a web-based application that uses the OpenTok Screensharing with Annotations Accelerator Pack for JavaScript.
+This document describes how to develop a web-based application that uses the OpenTok Screensharing with Annotations Sample for JavaScript.
 
-This guide has the following sections:
+## Explore the Code
 
-- [Prerequisites](#prerequisites): A checklist of everything you need to get started.
-- Download the accelerator pack: Download and use the OpenTok Screensharing with Annotations Accelerator Pack provided to you by TokBox for use in your own development.
-- [Deploy](#deploy): Deploy your own application that hosts the Screensharing with Annotations Accelerator.
-- [Explore the code](#explore-the-code): This describes the sample app code design, which uses recommended best practices to create a working implementation that uses the Screensharing with Annotations Accelerator.
+This section describes how the sample app code design uses recommended best practices to create a working implementation that uses the Screensharing with Annotations Sample.
 
-
-## Prerequisites
-
-To be prepared to develop a web-based application that uses the OpenTok Screensharing with Annotations Accelerator for JavaScript:
-
-1. Review the basic requirements for [OpenTok](https://tokbox.com/developer/requirements/) and [OpenTok.js](https://tokbox.com/developer/sdks/js/#browsers).
-2. Your project must include [jQuery](https://jquery.com/) and [Underscore](http://underscorejs.org/).
-3. There are several ways to install the OpenTok Screensharing with Annotations Accelerator Pack: <ol><li>Install with [npm](https://www.npmjs.com/package/opentok-screen-sharing).</li><li>Run the [build.sh script](./build.sh).</li><li>Download and extract the **screenshare-annotation-acc-pack.js** file from the [zip](https://s3.amazonaws.com/artifact.tokbox.com/solution/rel/screensharing-annotations-acc-pack/JS/opentok-js-screenshare-annotation-1.0.0.zip) file provided by TokBox.</li></ol>
-4. Your web page must load [OpenTok.js](https://tokbox.com/developer/sdks/js/) first, and then load [opentok-annotations.js](./sample-app/public/js/components/opentok-annotation.js) and [screenshare-annotation-acc-pack.js](./sample-app/public/js/components/screenshare-annotation-acc-pack.js).
-5. Your app will need a **Session ID**, **Token**, and **API key**, which you can get at the [OpenTok Developer Dashboard](https://dashboard.tokbox.com).
-
-_**NOTE**: The OpenTok Developer Dashboard allows you to quickly run this sample program. For production deployment, you must generate the **Session ID** and **Token** values using the [OpenTok Server SDK](https://tokbox.com/developer/sdks/server/)._
-
-
-## Deploy
-
-The web page that loads the OpenTok Screensharing with Annotations example for JavaScript must be served over HTTP/HTTPS. Browser security limitations prevent you from publishing video using a `file://` path, as discussed in the OpenTok.js [Release Notes](https://www.tokbox.com/developer/sdks/js/release-notes.html#knownIssues).
-
-To support clients running [Chrome 47 or later](https://groups.google.com/forum/#!topic/discuss-webrtc/sq5CVmY69sc), HTTPS is required, though localhost Chrome clients are considered secure and HTTP is permitted in such cases.
-
-A web server such as [MAMP](https://www.mamp.info/) or [Apache](https://httpd.apache.org/) will work, or you can use a cloud service such as [Heroku](https://www.heroku.com/) to host the widget.
-
-## Explore the code
-
-This section describes how the sample app code design uses recommended best practices to create a working implementation that uses the Screensharing with Annotations Accelerator.
-
-To develop your own application, follow this section to learn how to add the toolbar to your container and create an annotation canvas for both the publisher and subscriber.
+To develop your application, follow this section to learn how to add the toolbar to your container and create an annotation canvas for both the publisher and subscriber.
 
 The following steps will help you get started, and you can refer to the [complete code example](./sample-app/public/index.html):
 
@@ -49,28 +20,25 @@ The following steps will help you get started, and you can refer to the [complet
 To learn more about the annotation widget, visit [OpenTok Annotations Widget for JavaScript](https://github.com/opentok/annotation-widget/tree/js).
 
 
-### Web page design
+### Web Page Design
 
 While TokBox hosts [OpenTok.js](https://tokbox.com/developer/sdks/js/), you must host the JavaScript Annotations widget yourself. You can specify toolbar items, colors, icons, and other options for the annotation widget via the common layer. For details about the one-to-one communication audio-video aspects of the design, see the [OpenTok One-to-One Communication Sample App](https://github.com/opentok/one-to-one-sample-apps/tree/master/one-to-one-sample-app/js) and [OpenTok Common Accelerator Session Pack](https://github.com/opentok/acc-pack-common/). The sample app has the following design:
 
 * **[app.js](./sample-app/public/js/app.js)**: This is where you specify the **Session ID**, **Token**, and **API key**. This file contains functionality supporting the view layer and button click events, initializes the session, instantiates the one-to-one communication layer, and listens for stream and call events.
 
-* **[accelerator-pack.js](./sample-app/public/js/components/accelerator-pack.js)**: The TokBox Common Accelerator Session Pack is a common layer that permits all accelerators to share the same OpenTok session, API Key and other related information, and is required whenever you use any of the OpenTok accelerators. This layer handles communication between the client and any required components, such as screensharing and text chat, which are instantiated in this layer. Each component can define its own events, which are then registered in this common layer.
+* **[accelerator-pack.js](./sample-app/public/js/components/accelerator-pack.js)**: The TokBox Common Accelerator Session Pack is a common layer that permits all accelerators to share the same OpenTok session, API Key, and other related information, and is required whenever you use any of the OpenTok accelerators. This layer handles communication between the client and any required components, such as screen sharing and text chat, which are instantiated in this layer. Each component can define its events, which are then registered in this common layer.
 
-* **[opentok-annotation.js](./sample-app/public/js/components/opentok-annotation.js)**: This is the OpenTok Annotation Plugin. If you already have a website making calls against the OpenTok JavaScript client, you can simply download this file and the image files.
+* **[opentok-annotation.js](./opentok.js-ss-annotation/src/acc-pack-annotation.js)**: This contains the constructor for the annotation component used over video or a shared screen. In the sample application build process, opentok-annotation.js (this file) and opentok-screen-sharing.js are combined into the screenshare-annotation-acc-pack.js.
 
-* **[acc-pack-annotation.js](./opentok.js-ss-annotation/src/acc-pack-annotation.js)**: This contains the constructor for the annotation component used over video or a shared screen.
+* **[opentok-screensharing.js](./opentok.js-ss-annotation/src/opentok-screen-sharing.js)**: This contains the constructor for the screen sharing component. In the sample application build process, opentok-annotation.js and opentok-screensharing.js  (this file) are combined into the screenshare-annotation-acc-pack.js.
+* **[screenshare-annotation-acc-pack.js](./sample-app/public/js/components/screenshare-annotation-acc-pack.js)**: _(Available only in the Screensharing with Annotations Accelerator Pack)._ Defines the annotation component that can be used with screen sharing, the screensharing component, and the one-to-one communication layer used in the sample application. Both the publisher and subscriber can annotate the shared screen.
 
-* **[screenshare-annotation-acc-pack.js](./sample-app/public/js/components/screenshare-annotation-acc-pack.js)**: _(Available only in the Screensharing with Annotations Accelerator Pack)._ Defines the annotation component that can be used with screensharing, the screensharing component, and the one-to-one communication layer used in the sample application.
+* **[CSS files](./sample-app/public/css)**: Defines the client UI style.  
 
-* **[screenshare.html](./sample-app/public/screenshare.html)**: The screen sharing container, which has its own toolbar and is displayed in a separate browser window.
-
-* **[CSS files](./sample-app/public/css)**: Defines the client UI style.
-
-* **[index.html](web/index.html)**: This web page provides you with a quick start if you don't already have a web page making calls against OpenTok.js (via accelerator-pack.js) and opentok-annotation.js. Its <head> element loads the OpenTok.js library, Annotation library, and other dependencies, and its <body> element implements the UI container for the controls on your own page.
+* **[index.html](web/index.html)**: This web page provides you with a quick start if you don't already have a web page making calls against OpenTok.js (via accelerator-pack.js) and opentok-annotation.js. Its <head> element loads the OpenTok.js library, Annotation library, and other dependencies, and its <body> element implements the UI container for the controls on your page.
 
 
-### Specifying the options
+### Specifying the Options
 
 In app.js, specify the **Session ID**, **Token**, and **API key** by editing the corresponding strings in `_options`:
 
@@ -79,10 +47,12 @@ In app.js, specify the **Session ID**, **Token**, and **API key** by editing the
     apiKey: '',
     sessionId: '',
     token: '',
+    ...
+  }
 ```
 
 
-### Initializing the session
+### Initializing the Session
 
 The `AnnotationAccPack` constructor, located in `acc-pack-annotation.js`, sets the `accPack` property to register, trigger, and start events via the common layer API used for all accelerator packs:
 
@@ -100,6 +70,7 @@ The `AnnotationAccPack` constructor, located in `acc-pack-annotation.js`, sets t
     _this = this;
     _this.options = _.omit(options, 'accPack');
     _accPack = _.property('accPack')(options);
+    _session = _.property('session')(options);
     _registerEvents();
     _setupUI();
   };
@@ -151,9 +122,9 @@ The `_init()` method in app.js initializes the session. It listens for the conne
 
 For more information, see [Initialize, Connect, and Publish to a Session](https://tokbox.com/developer/concepts/connect-and-publish/).
 
-### Initializing the components
+### Initializing the Components
 
-If you install the screensharing with annotations component with [npm](https://www.npmjs.com/package/opentok-screen-sharing), you can instantiate the `ScreenSharingAccPack` instance with this approach:
+If you install the screen sharing with annotations component with [npm](https://www.npmjs.com/package/opentok-screen-sharing), you can instantiate the `ScreenSharingAccPack` instance with this approach:
 
   ```javascript
   const screenSharing = require('opentok-screen-sharing');
@@ -161,7 +132,7 @@ If you install the screensharing with annotations component with [npm](https://w
   ```
 
 
-The `_initAccPackComponents()` method in accelerator-pack.js initializes the components required by the application. In this example the screensharing and annotation components are initialized:
+The `_initAccPackComponents()` method in accelerator-pack.js initializes the components required by the application. In this example the screen sharing and annotation components are initialized:
 
 
 ```javascript
@@ -204,6 +175,23 @@ The `_initAccPackComponents()` method in accelerator-pack.js initializes the com
 
 The `linkCanvas()` method, located in `acc-pack-annotation.js`, refers to a parent DOM element called the `absoluteParent`. This is needed in order to maintain accurate information needed to properly resize both the canvas and its container element as the window is resized. This is a recommended best practice that mitigates potential issues with jQuery in which information may be lost upon multiple resize attempts.
 
+## Prerequisites for Development
+
+To prepare for developing a web-based application that uses the OpenTok Screensharing with Annotations Accelerator for JavaScript:
+
+1. Review the basic requirements for [OpenTok](https://tokbox.com/developer/requirements/) and [OpenTok.js](https://tokbox.com/developer/sdks/js/#browsers).
+2. Your project must include [jQuery](https://jquery.com/) and [Underscore](http://underscorejs.org/).<br/>_**NOTE**: This step is not necessary if you are using [browserify](http://browserify.org/) or [webpack](https://webpack.github.io/) in your project._
+3. There are several ways to install the OpenTok Screensharing with Annotations Accelerator Pack: <ul><li>(Preferred) Run the [build.sh script](./build.sh).</li><li>Download and extract the **screenshare-annotation-acc-pack.js** file from the [zip](https://s3.amazonaws.com/artifact.tokbox.com/solution/rel/screensharing-annotations-acc-pack/JS/opentok-js-screenshare-annotation-1.0.0.zip) file provided by TokBox.</li><li>Install the following packages with  [npm](https://www.npmjs.com/package/opentok-screen-sharing): opentok-annotations, opentok-screen-sharing,  opentok-solutions-css, and opentok-solutions-logging. Then move the files to the `public/js` folder.</li></ul>
+4. Your web page must load [OpenTok.js](https://tokbox.com/developer/sdks/js/) first, and then load [opentok-annotations.js](./sample-app/public/js/components/opentok-annotation.js) and [screenshare-annotation-acc-pack.js](./sample-app/public/js/components/screenshare-annotation-acc-pack.js).
+5. Your app will need a **Session ID**, **Token**, and **API key**, which you can get at the [OpenTok Developer Dashboard](https://dashboard.tokbox.com).
+
+_**NOTE**: The OpenTok Developer Dashboard allows you to quickly run this sample program. For production deployment, you must generate the **Session ID** and **Token** values using the [OpenTok Server SDK](https://tokbox.com/developer/sdks/server/)._
 
 
+## Deploy
 
+The web page that loads the OpenTok Screensharing with Annotations example for JavaScript must be served over HTTP/HTTPS. Browser security limitations prevent you from publishing video using a `file://` path, as discussed in the OpenTok.js [Release Notes](https://www.tokbox.com/developer/sdks/js/release-notes.html#knownIssues).
+
+To support clients running [Chrome 47 or later](https://groups.google.com/forum/#!topic/discuss-webrtc/sq5CVmY69sc), HTTPS is required, though localhost Chrome clients are considered secure and HTTP is permitted in such cases.
+
+A web server such as [MAMP](https://www.mamp.info/) or [Apache](https://httpd.apache.org/) will work, or you can use a cloud service such as [Heroku](https://www.heroku.com/) to host the widget.

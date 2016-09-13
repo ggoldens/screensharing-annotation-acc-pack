@@ -1,6 +1,6 @@
 ![logo](../tokbox-logo.png)
 
-# OpenTok Screensharing with Annotations Accelerator Pack for Android<br/>Version 1.0.0
+# OpenTok Screensharing with Annotations Accelerator Pack for Android<br/>Version 2.0.0
 
 This document describes how to use the OpenTok Screensharing with Annotations Accelerator Pack for Android. Through the exploration of the OpenTok Screensharing with Annotations Sample App, you will learn best practices for screensharing on an Android mobile device.
 
@@ -83,7 +83,7 @@ maven { url  "http://tokbox.bintray.com/maven" }
 
 
 <code>
-compile 'com.opentok.android:opentok-screensharing-annotations:1.0.0'
+compile 'com.opentok.android:opentok-screensharing-annotations:2.0.0’
 </code>
 
 </li>
@@ -95,7 +95,7 @@ compile 'com.opentok.android:opentok-screensharing-annotations:1.0.0'
 
 #### Downloading and Installing the AAR File
 
-1.  Download the [Screensharing with Annotations Accelerator Pack zip file](https://s3.amazonaws.com/artifact.tokbox.com/solution/rel/screensharing-annotations-acc-pack/android/opentok-screensharing-annotations-1.0.0.zip) containing the AAR file and documentation, and extract the **opentok-screensharing-annotations-1.0.0.aar** file.
+1.  Download the [Screensharing with Annotations Accelerator Pack zip file](https://s3.amazonaws.com/artifact.tokbox.com/solution/rel/screensharing-annotations-acc-pack/android/opentok-screensharing-annotations-2.0.0.zip) containing the AAR file and documentation, and extract the **opentok-screensharing-annotations-2.0.0.aar** file.
 2.  Right-click the app name and select **Open Module Settings** and click **+**.
 3.  Select **Import .JAR/.AAR Package** and click  **Next**.
 4.  Browse to the **Screensharing with Annotations Accelerator Pack library AAR** and click **Finish**.
@@ -177,7 +177,7 @@ From [AnnotationsKit](https://github.com/opentok/annotation-acc-pack).
 
 ###  Screensharing Accelerator Pack
 
-The `ScreenSharingFragment` class is the backbone of the screensharing features for the app. It serves as a controller for the screensharing UI widget, and initializes such functionality as stroke color and scrolling features. It uses the [`android.media.projection.MediaProjection`](http://developer.android.com/reference/android/media/projection/MediaProjection.html), supported on Android Lollipop, and provides the projection callbacks needed for screensharing.
+The `ScreenSharingFragment` class is the backbone of the screensharing features for the app. It serves as a controller for the screensharing UI widget, and initializes such functionality as stroke color and scrolling features. It uses the [`android.media.projection.MediaProjection`](http://developer.android.com/reference/android/media/projection/MediaProjection.html), supported on Android Lollipop, and provides the projection callbacks needed for screensharing. 
 
 This class, which inherits from the [`android.support.v4.app.Fragment`](http://developer.android.com/intl/es/reference/android/support/v4/app/Fragment.html) class, sets up the screensharing with annotations UI views and events, sets up session listeners, and defines a listener interface that is implemented in this example by the `MainActivity` class.
 
@@ -194,7 +194,7 @@ public class ScreenSharingFragment
 }
 ```
 
-The `ScreenSharingListener` interface monitors state changes in the `ScreenSharingFragment`, and defines the following methods:
+Both the publisher (the participant sharing the screen) and the subscriber (the participant with whom the publisher’s screen is being shared) can annotate the shared screen. The `ScreenSharingListener` interface monitors state changes in the `ScreenSharingFragment`, and defines the following methods, which include callbacks for both the publisher and subscriber views:
 
 ```java
 public interface ScreenSharingListener {
@@ -202,7 +202,8 @@ public interface ScreenSharingListener {
     void onScreenSharingStarted();
     void onScreenSharingStopped();
     void onScreenSharingError(String error);
-    void onAnnotationsViewReady(AnnotationsView view);
+    void onAnnotationsViewReady(AnnotationsView view);       // publisher view
+    void onAnnotationsRemoteViewReady(AnnotationsView view); // subscriber view
     void onClosed();
 
 }
@@ -218,7 +219,8 @@ The following `ScreenSharingFragment` methods are used to initialize the app and
 | Start screen capture.   | `start()`  |
 | Stop screen capture.  | `stop()`  |
 | Set the listener object to monitor state changes.   | `setListener()` |
-| Sets whether annotations are enabled on the specified toolbar.  | `enableAnnotations()`  |
+| Sets whether annotations are enabled on the specified publisher toolbar.  | `enableAnnotations()`  |
+| Sets whether annotations are enabled on the specified subscriber toolbar.  | `enableRemoteAnnotations()`  |
 
 
 #### Setting the Annotation Toolbar
@@ -290,7 +292,7 @@ This class works with the following `MainActivity` methods, which manage the vie
 | Manage the UI containers. | `onCreate()`  |
 | Reload the UI views whenever the device [configuration](http://developer.android.com/reference/android/content/res/Configuration.html), such as screen size or orientation, changes. | `onConfigurationChanged()`  |
 | Opens and closes the screensharing with annotations view. | `onScreenSharing()` |
-| Manage the customizable views for the action bar, screensharing, and annotation callbacks.   | `onScreenSharingStarted()`, `onScreenSharingStopped()`, `onScreenSharingError()`,  `onClosed()`|
+| Manage the customizable views for the action bar, screensharing, and annotation callbacks.   | `onScreenSharingStarted()`, `onScreenSharingStopped()`, `onAnnotationsViewReady()`, `onAnnotationsRemoteViewReady()`, `onScreenSharingError()`,  `onClosed()`|
 
 
 
